@@ -11,9 +11,10 @@ module Test
             super(elapsed_time)
             
             xml_path = ENV["TUXML_OUTPUT_FILE"] || "tests.xml"
+            indent_output = (ENV["TUXML_INDENT_XML"] || 'false').downcase == 'true'
 
             nl
-            File.open(xml_path,'w') {|file| file.write(to_xml) }
+            File.open(xml_path,'w') {|file| file.write(to_xml, indent_output ? 0 : -1) }
             output("XML output saved: #{xml_path}")
             nl
           end

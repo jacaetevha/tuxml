@@ -5,12 +5,34 @@ module Test
   module Unit
     class TestCase
       def fault
-        @_fault
+        # TODO: Determine why @_fault doesn't get reported properly in the TestSuite
+        @_fault ||= (my_failures || my_errors)
+      end
+
+      def my_errors
+        fault_from @_result.instance_variable_get('@errors')
+      end
+
+      def my_failures
+        fault_from @_result.instance_variable_get('@failures')
+      end
+
+      def fault_from collection
+        return [] unless collection
+        collection.detect{|e| e.instance_variable_get('@test_name') == name}
+      end
+
+      def failure_count
+        my_failures.nil? ? 0 : 1
+      end
+      
+      def error_count
+        my_errors.nil? ? 0 : 1
       end
       
       def xml_element
         return if @method_name.to_s == "default_test"
-        
+
         testcase = REXML::Element.new("testcase")
         testcase.add_attributes('classname' => self.class.name, 'name' => @method_name, 'time' => @_elapsed_time.to_s)
         if fault

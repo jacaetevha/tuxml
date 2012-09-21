@@ -7,7 +7,7 @@ module Test
       def xml_element
         element = REXML::Element.new('error')
         element.add_attributes('type' => exception.class.name, 'message' => exception.message)
-        element.text = exception.backtrace.join("\n")
+        element.text = REXML::CData.new exception.backtrace.join("\n")
         element
       end
     end

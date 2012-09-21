@@ -39,17 +39,16 @@ module Test
         node
       end
       
-    private
       def test_count
         @tests.size
       end
       
       def failure_count
-        @tests.select { |test| test.fault.is_a?(Failure) }.size
+        @tests.inject(0) { |sum, ea| sum + ea.failure_count }
       end
       
       def error_count
-        @tests.select { |test| test.fault.is_a?(Error) }.size
+        @tests.inject(0) { |sum, ea| sum + ea.error_count }
       end
     end
   end
